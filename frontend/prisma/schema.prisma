@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Example models based on your Ginger App:
+
+model User {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  name        String
+  role        String    @default("Checker")
+  status      String    @default("Active")
+  
+  projects    Project[] // Relation to projects
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Project {
+  id              String   @id @default(uuid())
+  projectId       String   @unique // The "C Project ID" like "5231"
+  nameDesignation String
+  status          String
+  endDate         DateTime
+  taskNum         Int
+  registeredHours Float
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SoftwareCredential {
+  id          String   @id @default(uuid())
+  role        String   // "Labeler" or "Checker"
+  softwareUid String   @unique
+  password    String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
