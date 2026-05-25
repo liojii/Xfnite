@@ -56,6 +56,22 @@ export default function LoginPage() {
         .animate-fade-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
+        @keyframes float {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .mesh-blob {
+          position: absolute;
+          filter: blur(80px);
+          border-radius: 50%;
+          opacity: 0.4;
+          animation: float 10s infinite ease-in-out;
+        }
+        .dark .mesh-blob {
+          opacity: 0.15;
+        }
       `}</style>
 
       {/* Theme Toggle */}
@@ -63,8 +79,12 @@ export default function LoginPage() {
         <ThemeToggle />
       </div>
 
-
-      <div className="relative z-10 w-full min-h-[560px] flex flex-col justify-center max-w-lg bg-white/60 dark:bg-black/60 backdrop-blur-xl border border-white/40 dark:border-white/15 rounded-tr-2xl rounded-bl-2xl shadow-2xl p-10 animate-scale-in">
+      {/* Mesh Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="mesh-blob bg-[#55f761]" style={{ width: '40vw', height: '40vw', top: '-10%', left: '-10%', animationDelay: '0s', animationDuration: '12s' }}></div>
+        <div className="mesh-blob bg-[#1F7A1F]" style={{ width: '50vw', height: '50vw', top: '40%', right: '-20%', animationDelay: '2s', animationDuration: '18s' }}></div>
+        <div className="mesh-blob bg-[#3de34a]" style={{ width: '35vw', height: '35vw', bottom: '-10%', left: '20%', animationDelay: '4s', animationDuration: '14s' }}></div>
+      </div>      <div className="relative z-10 w-full min-h-[560px] flex flex-col justify-center max-w-lg bg-white/60 dark:bg-black/60 backdrop-blur-xl border border-white/40 dark:border-white/15 rounded-tr-2xl rounded-bl-2xl shadow-2xl p-10 animate-scale-in">
         <div className="text-center mb-10 animate-fade-up delay-100">
           <div className="w-10 h-10 mx-auto bg-[#0D1B2A] dark:bg-white/15 border border-black/10 dark:border-white/20 rounded-lg flex items-center justify-center mb-5">
             {isLoading ? (
