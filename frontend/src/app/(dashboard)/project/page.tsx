@@ -8,7 +8,6 @@ export default function ProjectPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   const [selectedRegisterProject, setSelectedRegisterProject] = useState<any>(null);
   const [registerHoursInput, setRegisterHoursInput] = useState<number>(1);
@@ -28,7 +27,6 @@ export default function ProjectPage() {
       if (response.ok && result.success) {
         // The API returns ongoing_annotate_list
         setProjects(result.data.ongoing_annotate_list || result.data.annotate_list || []);
-        if (result.debug) setDebugInfo(result.debug);
       } else {
         setError(result.error || (result.details ? JSON.stringify(result.details) : "Failed to load projects"));
       }
@@ -129,18 +127,9 @@ export default function ProjectPage() {
                   </td>
                 </tr>
               ) : projects.length === 0 ? (
-                <tr>
                   <td colSpan={6} className="py-8 text-center text-[#2F3E46] dark:text-[#E0E1DD]/60">
                     No active projects found.
-                    {/* Add a hidden debug element in DOM that the user can inspect or we can render if we need to */}
-                    {debugInfo && (
-                      <div className="mt-4 p-4 text-left bg-[#0D1B2A]/5 rounded overflow-auto max-h-40 text-xs">
-                        <span className="font-semibold block mb-1">Debug Info:</span>
-                        <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-                      </div>
-                    )}
                   </td>
-                </tr>
               ) : (
                 projects.map((project: any, index: number) => (
                   <tr key={index} className="hover:bg-[#E0E1DD]/50 dark:hover:bg-[#E0E1DD]/5 transition-colors group">

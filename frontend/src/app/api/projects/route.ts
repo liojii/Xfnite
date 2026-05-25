@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     // If there are no projects, return early with debug info
     if (projects.length === 0) {
-      return NextResponse.json({ success: true, data: { annotate_list: [] }, debug: listData });
+      return NextResponse.json({ success: true, data: { annotate_list: [] } });
     }
 
     // 2️⃣ Extract the project IDs and fetch statistics for them
