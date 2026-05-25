@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 // Read env for the public API URL (available client‑side as well)
 const GINGER_BASE = process.env.NEXT_PUBLIC_GINGER_API_URL || "https://ginger.bitmappro.com";
@@ -8,11 +9,21 @@ const GINGER_LOGOUT_ENDPOINT = `${GINGER_BASE}/bac/logout`;
 
 export async function POST(request: Request) {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ginger_access_token")?.value;
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     // 1️⃣ Forward the logout request to the real Ginger logout endpoint
-    // We send a POST request. Depending on Ginger's API, you might need to forward cookies/tokens here later.
     const gingerRes = await fetch(GINGER_LOGOUT_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
     });
 
     const gingerData = await gingerRes.json().catch(() => ({}));
@@ -25,10 +36,15 @@ export async function POST(request: Request) {
     }
 
     // 2️⃣ Return success
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: gingerData,
     });
+
+    // Clear the cookie
+    response.cookies.delete("ginger_access_token");
+
+    return response;
   } catch (err) {
     console.error("Logout API error:", err);
     return NextResponse.json(

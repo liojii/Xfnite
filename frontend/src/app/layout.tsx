@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { cn } from "@/lib/utils";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: "Ginger Annotation",
-  description: "Ginger Annotation Platform",
+  title: "XFnite"
 };
 
 export default function RootLayout({
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${plusJakartaSans.variable} font-sans bg-[#E0E1DD] text-[#0D1B2A] dark:bg-[#060D14] dark:text-[#E0E1DD] antialiased min-h-screen transition-colors duration-200`}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+      <body className={`${geist.variable} font-sans bg-[#E0E1DD] text-[#0D1B2A] dark:bg-[#060D14] dark:text-[#E0E1DD] antialiased min-h-screen transition-colors duration-200`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

@@ -28,10 +28,24 @@ export async function POST(request: Request) {
     }
 
     // 2️⃣ Return the success payload directly back to the frontend
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: gingerData,
     });
+
+    // 3️⃣ Store the access token securely in an HttpOnly cookie
+    if (gingerData?.credential?.access_token) {
+      response.cookies.set({
+        name: "ginger_access_token",
+        value: gingerData.credential.access_token,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error("Login API error:", err);
     return NextResponse.json(
