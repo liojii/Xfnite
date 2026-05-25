@@ -26,9 +26,6 @@ export default function Header({ userName, isLoggingOut, onLogout }: HeaderProps
     return (
         <header className="h-14 bg-white dark:bg-[#0D1B2A] border-b border-[#1B263B]/10 dark:border-[#E0E1DD]/10 flex items-center justify-between px-6 sticky top-0 z-20 transition-colors duration-200">
             <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded bg-[#0D1B2A] dark:bg-[#E0E1DD] flex items-center justify-center">
-                    <span className="text-white dark:text-[#0D1B2A] font-bold text-[11px]">G</span>
-                </div>
                 <span className="font-semibold tracking-tight text-sm text-[#0D1B2A] dark:text-[#E0E1DD]">XFINITE</span>
             </div>
             <div className="flex items-center gap-4">

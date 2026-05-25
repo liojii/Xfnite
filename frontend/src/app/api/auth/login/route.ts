@@ -27,10 +27,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2️⃣ Return the success payload directly back to the frontend
+    // 2️⃣ Return the success payload but STRIP the access token to prevent XSS exposure
+    const safeData = { ...gingerData };
+    if (safeData.credential) {
+      // We only keep safe credentials (if any), removing sensitive tokens
+      delete safeData.credential.access_token;
+      delete safeData.credential.refresh_token;
+    }
+
     const response = NextResponse.json({
       success: true,
-      data: gingerData,
+      data: safeData,
     });
 
     // 3️⃣ Store the access token securely in an HttpOnly cookie
