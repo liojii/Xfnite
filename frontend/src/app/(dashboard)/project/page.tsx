@@ -127,9 +127,11 @@ export default function ProjectPage() {
                   </td>
                 </tr>
               ) : projects.length === 0 ? (
+                <tr>
                   <td colSpan={6} className="py-8 text-center text-[#2F3E46] dark:text-[#E0E1DD]/60">
                     No active projects found.
                   </td>
+                </tr>
               ) : (
                 projects.map((project: any, index: number) => (
                   <tr key={index} className="hover:bg-[#E0E1DD]/50 dark:hover:bg-[#E0E1DD]/5 transition-colors group">
