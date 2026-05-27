@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
+import Link from "next/link";
 
 
 export default function LoginPage() {
@@ -157,7 +157,7 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col gap-3">
             <button
               type="submit"
               disabled={isLoading}
@@ -165,6 +165,12 @@ export default function LoginPage() {
             >
               {isLoading ? "Authenticating..." : "Sign In"}
             </button>
+            <div className="text-center text-sm text-[#2F3E46] dark:text-white/60 mt-2">
+              Don't have an account?{" "}
+              <Link href="/register" className="text-[#1F7A1F] dark:text-[#55f761] hover:underline font-semibold">
+                Sign Up
+              </Link>
+            </div>
           </div>
         </form>
       </div>

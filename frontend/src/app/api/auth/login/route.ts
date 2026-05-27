@@ -4,6 +4,15 @@ import { cookies } from "next/headers";
 const GINGER_BASE = process.env.NEXT_PUBLIC_GINGER_API_URL || "https://ginger.bitmappro.com";
 const GINGER_LOGIN_ENDPOINT = `${GINGER_BASE}/bac/login`;
 
+import { PrismaClient } from "@prisma/client";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+const connectionString = `${process.env.DATABASE_URL}`;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
@@ -43,6 +52,28 @@ export async function POST(request: Request) {
     if (safeData.credential) {
       delete safeData.credential.access_token;
       delete safeData.credential.refresh_token;
+    }
+
+    // 4️⃣ SYNC user to local Postgres Database
+    const userEmail = safeData.user?.email || safeData.email;
+    const userName = safeData.user?.user_name || safeData.name || safeData.userName || "User";
+    
+    if (userEmail) {
+      try {
+        await prisma.user.upsert({
+          where: { email: userEmail },
+          update: { name: userName },
+          create: {
+            email: userEmail,
+            name: userName,
+            role: safeData.user?.role || "Checker",
+            status: safeData.user?.disable === 1 ? "Disabled" : "Active",
+          }
+        });
+      } catch (dbErr) {
+        console.error("Failed to sync user to local DB on login:", dbErr);
+        // Do not block login if sync fails
+      }
     }
 
     return NextResponse.json({

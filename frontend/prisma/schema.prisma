@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,43 +6,70 @@ datasource db {
   provider = "postgresql"
 }
 
-// Example models based on your Ginger App:
-
 model User {
-  id          String    @id @default(uuid())
-  email       String    @unique
-  name        String
-  role        String    @default("Checker")
-  status      String    @default("Active")
-  
-  projects    Project[] // Relation to projects
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String
+  role      String    @default("Checker")
+  status    String    @default("Active")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
 }
 
 model Project {
   id              String   @id @default(uuid())
-  projectId       String   @unique // The "C Project ID" like "5231"
+  projectId       String   @unique
   nameDesignation String
   status          String
   endDate         DateTime
   taskNum         Int
   registeredHours Float
-  
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
-
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model SoftwareCredential {
   id          String   @id @default(uuid())
-  role        String   // "Labeler" or "Checker"
+  role        String
   softwareUid String   @unique
   password    String
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model PaymentDetails {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  payeeName     String?
+  payeeUid      String?
+  paymentMethod String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CurrentIncome {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  estimatedAmount    Float     @default(0)
+  status             String    @default("Accumulating")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model IncomeHistory {
+  id            String    @id @default(uuid())
+  email         String
+  amountPaid    Float
+  periodStart   DateTime?
+  periodEnd     DateTime?
+  payoutDate    DateTime?
+  status        String    @default("Paid")
+  transactionId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
