@@ -20,7 +20,16 @@ export async function POST(request: Request) {
     };
 
     // 1️⃣ Get the basic list of ongoing projects
-    const listRes = await fetch(LIST_ENDPOINT, { method: "POST", headers, body: "{}" });
+    const listRes = await fetch(LIST_ENDPOINT, { 
+      method: "POST", 
+      headers, 
+      body: JSON.stringify({
+        offset: 0,
+        size: 100,
+        filter: { annotate_status: ["running"] },
+        is_payment_calculating: false
+      }) 
+    });
     const listData = await listRes.json();
 
     if (!listRes.ok) {

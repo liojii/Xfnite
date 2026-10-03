@@ -1,17 +1,29 @@
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const GINGER_BASE = process.env.NEXT_PUBLIC_GINGER_API_URL || "https://ginger.bitmappro.com";
 const GINGER_SIGNUP_VALIDATE_ENDPOINT = `${GINGER_BASE}/bac/eam/koala/koala-user/user/signup-validate`;
 const GINGER_SIGNUP_ENDPOINT = `${GINGER_BASE}/bac/eam/koala/koala-user/user/signup`;
 
-import { PrismaClient } from "@prisma/client";
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
+let prismaInstance: PrismaClient | null = null;
 
-const connectionString = `${process.env.DATABASE_URL}`;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+function getPrisma() {
+  if (!prismaInstance) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error("DATABASE_URL is not set in environment variables");
+    }
+    const pool = new Pool({
+      connectionString,
+      connectionTimeoutMillis: 5000,
+    });
+    const adapter = new PrismaPg(pool);
+    prismaInstance = new PrismaClient({ adapter });
+  }
+  return prismaInstance;
+}
 
 export async function POST(request: Request) {
   try {
@@ -130,6 +142,7 @@ export async function POST(request: Request) {
 
     // 3️⃣ SYNC user to local Postgres Database
     try {
+      const prisma = getPrisma();
       await prisma.user.upsert({
         where: { email: email },
         update: { name: username },
